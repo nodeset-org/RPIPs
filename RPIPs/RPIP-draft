@@ -1,0 +1,14 @@
+---
+rpip: Unassigned
+title: Saturn 1 Tokenomics Proposal
+description: Use existing parameters and well-researched upgrades to make simple, safe changes for efficiency
+author: Mike Leach (@VVander), Nick Steinhilber (@NickS)
+discussions-to: TBD
+status: Draft
+type: Protocol
+category: Core
+created: 2024-03-21
+---
+
+## Introduction
+The recent slide in the RPL/ETH ratio has caused pain across the entire Rocket Pool (RP) community. In response, the pDAO has reawakened tokenomics discussions to improve efficiency and attractiveness of RP, with seemingly anything on the table. The quantity of ideation is impressive, but there are significant and serious risks associated with full tokenomics transformations. We propose using existing protocol parameters alongside well-understood ideas like megapools[[1](https://github.com/nodeset-org/RPIPs/blob/main/RPIPs/RPIP-43.md),[2](https://github.com/rocket-pool/rocketpool-research/blob/ef5b5627f02a2307e11915236f98b130ef779cf1/Megapools/megapools.md)] and a flat application of further reduced LEB numbers to pursue these same objectives of efficiency and protocol attractiveness.  
