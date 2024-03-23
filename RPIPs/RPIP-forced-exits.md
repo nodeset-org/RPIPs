@@ -22,15 +22,15 @@ Currently, node operators are incentivized to keep their validators online throu
 
 ## Specification
 
-First, the minipool (or megapool) contract MUST define an `exit` function which calls the EIP-7002 pre-compile for the associated validator with an optional address parameter which receives a keeper fee.
+First, a new `exit` function is defined in the minipool (or megapool) contract which calls the EIP-7002 pre-compile for the associated validator public key. Calls to this function may optionally provide an address parameter that will receive a keeper fee once the validator funds have been withdrawn from the beacon chain.
 
 Second, the following new protocol parameters are introduced:
 
 - `MAX_KEEPER_VALIDATORS`, initially set to 25
-- `MIN_VALIDATOR_BALANCE`, initially set to 31.5 ETH
+- `MIN_VALIDATOR_BALANCE`, initially set to 31.8 ETH
 - `VALIDATOR_KEEPER_FEE`, initially set to 0.01 ETH
 
-Third, any address MAY submit a transaction to exit validators with a balance below 31.5 ETH. This transaction should call the following function (pseudocode):
+Third, any address may call the following protocol function:
 
 ```
 def ExitValidatorsKeeper(pubKey[] validators):
@@ -47,9 +47,9 @@ To incentivize users calling this function, `VALIDATOR_KEEPER_FEE` defines the a
 
 ## Rationale
 
-A keeper-style mechanism incentivizes the regular calling of this function by users which now may profit slightly by helping to keep RP productive. Although using this mechanism means that rETH will suffer by an additional `KEEPER_FEE` ETH value, this value is minimal compared to the value already lost from an offline validator with a balance below 31.5 ETH, and this feature likely saves rETH from additional value loss. Additionally, a keeper mechanism is advantageous in that additiona required trusted oDAO duties are unnecessary.
+A keeper-style mechanism incentivizes the regular calling of this function by users who will, in most circumstances, profit slightly while helping to keep RP productive. Although using this mechanism means that rETH will suffer by an additional `KEEPER_FEE` ETH value, this value is minimal compared to the value already lost from an offline validator with a balance below 31.5 ETH, and this feature likely saves rETH from additional value loss. Additionally, a keeper mechanism is advantageous in that additiona required trusted oDAO duties are unnecessary.
 
-31.5 ETH was chosen as the initial `MIN_VALIDATOR_BALANCE` as it requires the accrual of significant offline penalties under typical network conditions.
+31.8 ETH was chosen as the initial `MIN_VALIDATOR_BALANCE` as it requires the accrual of significant offline penalties under typical network conditions (approximately 200 days of missed attestations) without punishing new validators who were simply offline after being chosen for a sync committee or proposal. Users which have accrued this much offline time are likely to be unable to recover their validators at all due to incapacitation, lost keys, etc.
 
 0.01 ETH was chosen as the initial `VALIDATOR_KEEPER_FEE` as it adequately incentivizes users to call this function, even under high gas cost environments, while still being small enough to minimally harm the operator who will receive this much less of their funds upon disbersement.
 
@@ -57,12 +57,11 @@ A keeper-style mechanism incentivizes the regular calling of this function by us
 
 ### Forced Exits During Inactivity Leaking
 
-The Ethereum staking formula includes additional penalties for offline validators when large portions of the network are offline. This state of accelerated punishment is called "inactivity leaking". With the RP protocol forcing exits for validators under a 31.5 ETH balance, validators who are offline during an inactivity leaking scenario may be exited even if the validator is only offline for a brief period. In some extreme scenarios, a small number of missed attestations could cause a validator to be ejected from the network. This may be necessary, however, in order to protect the value of rETH during an unusual network state for Ethereum.
+The Ethereum staking formula includes additional penalties for offline validators when large portions of the network are offline. This state of accelerated punishment is called "inactivity leaking". With the RP protocol forcing exits for validators under a 31.9 ETH balance, validators who are offline during an inactivity leaking scenario may be exited even if the validator is only offline for a brief period. In some extreme scenarios, a small number of missed attestations could cause a validator to be ejected from the network. This may be necessary, however, in order to protect the value of rETH during an unusual network state for Ethereum.
 
 ## Future Enhancements
 
 EIP-7002 broadens the design space for staking protocols such that several options for enhancement are available. Although this document only proposes a single, simple use-case, I also suggest further review and development for consideration in the future:
 
-- Develop an oracle for determining typical performance such that significantly underperforming validators may also be exited
+- Develop or integrate an oracle such as for determining typical performance such that significantly underperforming validators may also be exited
 - Study and consider better values for the parameters introduced above to constrain additional losses where possible while keeping a user-friendly operator experience
--
